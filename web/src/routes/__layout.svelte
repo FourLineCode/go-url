@@ -1,8 +1,13 @@
+<script>
+	import '../app.postcss';
+</script>
+
 <body>
-	<div>
-		<slot />
-	</div>
+	<slot />
 </body>
 
-<style>
+<style global type="postcss">
+	body {
+		@apply antialiased bg-gray-900 text-white;
+	}
 </style>
