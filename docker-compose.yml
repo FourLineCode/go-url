@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+    url-postgres:
+        container_name: url-postgres
+        image: postgres:13-alpine
+        ports:
+            - 5432:5432
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: url
+            POSTGRES_PASSWORD: pgadmin
+
+    url-api:
+        container_name: url-api
+        build:
+            context: ./api
+            target: development
+        working_dir: /api
+        volumes:
+            - ./api:/api:rw
+        ports:
+            - 5000:5000
+        depends_on:
+            - url-postgres
+
+    url-web:
+        container_name: url-web
+        build:
+            context: ./web
+            target: development
+        working_dir: /web
+        volumes:
+            - ./web:/web:rw
+        ports:
+            - 3000:3000
+        depends_on:
+            - url-postgres
+            - url-api
+
+volumes:
+    pgdata: {}
