@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/FourLineCode/url-shortener/api/internel/config"
+	"github.com/FourLineCode/url-shortener/api/internal/config"
 	"github.com/FourLineCode/url-shortener/api/pkg/server"
 )
 
