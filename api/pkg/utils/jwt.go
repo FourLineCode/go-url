@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"log"
 	"os"
 
 	"github.com/dgrijalva/jwt-go"
@@ -18,7 +19,7 @@ type LoginClaims struct {
 func NewJWTSignedToken(claims jwt.Claims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	tokenString, err := token.SignedString(os.Getenv("JWT_SECRET"))
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
 		return "", err
 	}
@@ -26,16 +27,22 @@ func NewJWTSignedToken(claims jwt.Claims) (string, error) {
 	return tokenString, nil
 }
 
-func ValidateJWTSignedToken(token string) (bool, error) {
+func ValidateJWTSignedToken(token string) (bool, LoginClaims, error) {
 	claims := LoginClaims{}
 
-	tkn, err := jwt.ParseWithClaims(token, &claims, func(token *jwt.Token) (interface{}, error) {
-		return os.Getenv("JWT_SECRET"), nil
-	})
-
-	if err != nil || !tkn.Valid {
-		return false, errors.New("Invalid JWT token")
+	if token == "" {
+		return false, claims, nil
 	}
 
-	return true, nil
+	tkn, err := jwt.ParseWithClaims(token, &claims, func(token *jwt.Token) (interface{}, error) {
+		key := []byte(os.Getenv("JWT_SECRET"))
+		return key, nil
+	})
+
+	if err != nil {
+		log.Println(token, err.Error())
+		return false, LoginClaims{}, errors.New("error validating token")
+	}
+
+	return tkn.Valid, claims, nil
 }

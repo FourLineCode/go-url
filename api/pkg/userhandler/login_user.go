@@ -30,20 +30,20 @@ func (h *UserHandler) loginUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(utils.NewError("Invalid credentials"))
 	}
 
-	var userExists models.User
-	result := h.DB.Where("email = ?", input.Email).First(&userExists)
+	var user models.User
+	result := h.DB.Where("email = ?", input.Email).First(&user)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return c.Status(fiber.StatusBadRequest).JSON(utils.NewError("User not found with given email"))
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(userExists.PasswordHash), []byte(input.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.Password)); err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(utils.NewError("Invalid credentials"))
 	}
 
 	claims := utils.LoginClaims{
-		Id:       userExists.ID,
-		Username: userExists.Username,
-		Email:    userExists.Email,
+		Id:       user.ID,
+		Username: user.Username,
+		Email:    user.Email,
 	}
 	token, err := utils.NewJWTSignedToken(claims)
 	if err != nil {
@@ -51,11 +51,9 @@ func (h *UserHandler) loginUser(c *fiber.Ctx) error {
 	}
 
 	c.Cookie(&fiber.Cookie{
-		Name:     "auth",
-		Value:    token,
-		HTTPOnly: true,
-		Secure:   true,
+		Name:  "auth",
+		Value: token,
 	})
 
-	return c.Status(fiber.StatusOK).JSON(userExists)
+	return c.Status(fiber.StatusOK).JSON(user)
 }
