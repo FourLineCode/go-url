@@ -1,15 +1,12 @@
 package userhandler
 
 import (
-	"log"
-
 	"github.com/FourLineCode/url-shortener/api/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
 func (h *UserHandler) authorize(c *fiber.Ctx) error {
 	token := c.Cookies("auth")
-	log.Println(token)
 
 	valid, claims, err := utils.ValidateJWTSignedToken(token)
 	if err != nil {

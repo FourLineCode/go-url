@@ -2,7 +2,6 @@ package utils
 
 import (
 	"errors"
-	"log"
 	"os"
 
 	"github.com/dgrijalva/jwt-go"
@@ -40,7 +39,6 @@ func ValidateJWTSignedToken(token string) (bool, LoginClaims, error) {
 	})
 
 	if err != nil {
-		log.Println(token, err.Error())
 		return false, LoginClaims{}, errors.New("error validating token")
 	}
 
