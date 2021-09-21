@@ -1,7 +1,16 @@
-<script lang="typescript">
-	console.log('Hello svelte');
-</script>
+<svelte:head>
+	<title>GO-URL Shortener</title>
+</svelte:head>
 
-<div class="flex justify-center items-center text-green-500 w-screen h-screen text-3xl">
-	<div>Welcome to SvelteKit - URL Shortener</div>
+<div class="flex justify-center w-screen h-screen">
+	<div class="mt-32 space-y-2 text-center">
+		<div class="text-4xl italic font-bold">
+			Welcome to <span class="underline">GO-URL Shortener</span>
+		</div>
+		<div class="text-2xl">
+			Go to <span class="font-semibold text-blue-500 hover:underline"
+				><a href="/dashboard">{'dashboard'}</a></span
+			>
+		</div>
+	</div>
 </div>
