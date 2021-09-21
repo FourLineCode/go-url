@@ -1,14 +1,16 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import axios from 'axios';
+	import { onMount } from 'svelte';
 
 	let email: string = '';
 	let username: string = '';
 	let password: string = '';
-
-	let status: string;
+	let status: string = '';
+	let emailRef: any;
 
 	async function register() {
+		status = '';
 		try {
 			const res = await axios.post('http://localhost:5000/user/register', {
 				email,
@@ -23,6 +25,16 @@
 		} catch (error) {
 			status = error.response.data.error;
 		}
+	}
+
+	onMount(() => {
+		if (emailRef) {
+			emailRef.focus();
+		}
+	});
+
+	function onChange() {
+		status = '';
 	}
 </script>
 
@@ -39,18 +51,22 @@
 					type="text"
 					placeholder="Email"
 					bind:value={email}
+					on:input={onChange}
+					bind:this={emailRef}
 					class="w-full p-2 border border-gray-500 focus:outline-none focus:border-green-500"
 				/>
 				<input
 					type="text"
 					placeholder="Username"
 					bind:value={username}
+					on:input={onChange}
 					class="w-full p-2 border border-gray-500 focus:outline-none focus:border-green-500"
 				/>
 				<input
 					type="password"
 					placeholder="Password"
 					bind:value={password}
+					on:input={onChange}
 					class="w-full p-2 border border-gray-500 focus:outline-none focus:border-green-500"
 				/>
 				<div>

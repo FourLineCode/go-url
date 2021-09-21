@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import axios from 'axios';
-	import { onDestroy } from 'svelte';
-	import { auth, AuthState } from '../../stores/auth';
+	import { onDestroy, onMount } from 'svelte';
+	import { auth } from '../../stores/auth';
 
-	let authInfo: AuthState;
-	const unsubscribe = auth.subscribe((data) => (authInfo = data));
+	const unsubscribe = auth.subscribe(() => {});
 
 	let email: string = '';
 	let password: string = '';
-
-	let status: string;
+	let status: string = '';
+	let emailRef: any;
 
 	async function login() {
+		status = '';
 		try {
 			const res = await axios.post('http://localhost:5000/user/login', {
 				email,
@@ -38,6 +38,16 @@
 		}
 	}
 
+	function onChange() {
+		status = '';
+	}
+
+	onMount(() => {
+		if (emailRef) {
+			emailRef.focus();
+		}
+	});
+
 	onDestroy(unsubscribe);
 </script>
 
@@ -54,12 +64,15 @@
 					type="text"
 					placeholder="Email"
 					bind:value={email}
+					on:input={onChange}
+					bind:this={emailRef}
 					class="w-full p-2 border border-gray-500 focus:outline-none focus:border-green-500"
 				/>
 				<input
 					type="password"
 					placeholder="Password"
 					bind:value={password}
+					on:input={onChange}
 					class="w-full p-2 border border-gray-500 focus:outline-none focus:border-green-500"
 				/>
 				<div>

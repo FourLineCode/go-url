@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
 	import axios from 'axios';
 	import { onDestroy, onMount } from 'svelte';
@@ -41,6 +42,10 @@
 		loading = false;
 	});
 
+	$: if (browser && !authInfo.authorized && !loading) {
+		goto('/login');
+	}
+
 	onDestroy(unsubscribe);
 </script>
 
@@ -48,7 +53,13 @@
 	<title>Dashboard | GO-URL Shortener</title>
 </svelte:head>
 
-{#if !loading}
+{#if loading}
+	<div class="flex justify-center w-screen h-screen">
+		<div class="mt-32 space-y-2 text-center">
+			<div class="text-4xl italic font-bold">Loading...</div>
+		</div>
+	</div>
+{:else}
 	<div class="flex justify-center w-screen h-screen">
 		<div class="mt-32 space-y-2 text-center">
 			<div class="text-4xl italic font-bold">
@@ -56,12 +67,7 @@
 				<span class="underline">GO-URL Shortener</span>
 				<span>Dashboard</span>
 			</div>
-		</div>
-	</div>
-{:else}
-	<div class="flex justify-center w-screen h-screen">
-		<div class="mt-32 space-y-2 text-center">
-			<div class="text-4xl italic font-bold">Loading...</div>
+			<div>User: {authInfo.user?.username}</div>
 		</div>
 	</div>
 {/if}
