@@ -8,8 +8,8 @@
 			Welcome to <span class="underline">GO-URL Shortener</span>
 		</div>
 		<div class="text-2xl">
-			Go to <span class="font-semibold text-blue-500 hover:underline"
-				><a href="/dashboard">{'dashboard'}</a></span
+			Go to <span class="font-semibold text-green-500 hover:underline"
+				><a href="/dashboard">dashboard</a></span
 			>
 		</div>
 	</div>

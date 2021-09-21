@@ -47,5 +47,8 @@ func (h *UserHandler) registerUser(c *fiber.Ctx) error {
 
 	h.DB.Create(&newUser)
 
-	return c.Status(fiber.StatusCreated).JSON(newUser)
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"success": true,
+		"user":    newUser,
+	})
 }
