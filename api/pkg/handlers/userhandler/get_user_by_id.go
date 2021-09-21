@@ -7,6 +7,11 @@ import (
 )
 
 func (h *UserHandler) getUserById(c *fiber.Ctx) error {
+	authorized := utils.AuthorizeRoute(c)
+	if !authorized {
+		return utils.UnauthorizedResponse(c)
+	}
+
 	id := c.Params("id")
 
 	var user models.User

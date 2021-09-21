@@ -41,9 +41,7 @@ func (h *UserHandler) loginUser(c *fiber.Ctx) error {
 	}
 
 	claims := utils.LoginClaims{
-		Id:       user.ID,
-		Username: user.Username,
-		Email:    user.Email,
+		User: user,
 	}
 	token, err := utils.NewJWTSignedToken(claims)
 	if err != nil {
@@ -55,5 +53,8 @@ func (h *UserHandler) loginUser(c *fiber.Ctx) error {
 		Value: token,
 	})
 
-	return c.Status(fiber.StatusOK).JSON(user)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"user":    user,
+	})
 }

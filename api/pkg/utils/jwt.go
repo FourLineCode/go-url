@@ -4,15 +4,14 @@ import (
 	"errors"
 	"os"
 
+	"github.com/FourLineCode/url-shortener/api/pkg/models"
 	"github.com/dgrijalva/jwt-go"
 )
 
 type LoginClaims struct {
 	jwt.StandardClaims
 
-	Id       uint   `json:"id"`
-	Email    string `json:"email"`
-	Username string `json:"username"`
+	User models.User `json:"user"`
 }
 
 func NewJWTSignedToken(claims jwt.Claims) (string, error) {

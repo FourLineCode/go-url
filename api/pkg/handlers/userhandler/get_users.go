@@ -7,6 +7,11 @@ import (
 )
 
 func (h *UserHandler) getUsers(c *fiber.Ctx) error {
+	authorized := utils.AuthorizeRoute(c)
+	if !authorized {
+		return utils.UnauthorizedResponse(c)
+	}
+
 	var users []models.User
 	results := h.DB.Find(&users)
 	if results.Error != nil {
