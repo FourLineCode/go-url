@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/FourLineCode/url-shortener/api/pkg/db"
-	"github.com/FourLineCode/url-shortener/api/pkg/userhandler"
+	"github.com/FourLineCode/url-shortener/api/pkg/handlers/userhandler"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
