@@ -7,7 +7,7 @@ import (
 )
 
 func AuthMiddleware(c *fiber.Ctx) error {
-	token := c.Cookies("auth")
+	token := c.Get("auth-token")
 
 	valid, claims, err := utils.ValidateJWTSignedToken(token)
 	if err != nil || !valid {

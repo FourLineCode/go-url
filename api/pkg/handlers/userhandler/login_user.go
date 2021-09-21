@@ -48,13 +48,18 @@ func (h *UserHandler) loginUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(utils.NewError("Error signing authorized token"))
 	}
 
-	c.Cookie(&fiber.Cookie{
-		Name:  "auth",
-		Value: token,
-	})
+	// c.Cookie(&fiber.Cookie{
+	// 	Name:     "auth",
+	// 	Value:    token,
+	// 	HTTPOnly: true,
+	// 	Secure:   true,
+	// 	Path:     "/",
+	// 	Expires:  time.Now().Add(8760 * time.Hour),
+	// })
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
+		"token":   token,
 		"user":    user,
 	})
 }

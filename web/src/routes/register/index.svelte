@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import axios from 'axios';
 
 	let email: string = '';
@@ -17,10 +18,10 @@
 			const data = res.data;
 
 			if (data.success) {
-				status = JSON.stringify(data.user, null, 2);
+				goto('/login');
 			}
 		} catch (error) {
-			status = JSON.stringify(error, null, 2);
+			status = error.response.data.error;
 		}
 	}
 </script>
@@ -31,7 +32,7 @@
 
 <div class="flex justify-center w-screen h-screen">
 	<div class="flex justify-center w-full p-2 mt-32 space-y-2">
-		<div class="w-1/5 p-2 space-y-2 h-96">
+		<div class="w-1/5 min-w-[300px] p-2 space-y-2 h-96">
 			<div class="text-4xl font-bold text-center">Register</div>
 			<form action="" class="space-y-4">
 				<input
@@ -54,8 +55,8 @@
 				/>
 				<div>
 					{#if status}
-						<div class="text-center text-red-500">
-							<pre>{status}</pre>
+						<div class="text-xs text-center text-red-500">
+							{status}
 						</div>
 					{/if}
 					<button
