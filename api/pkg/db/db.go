@@ -7,6 +7,7 @@ import (
 	"github.com/FourLineCode/url-shortener/api/pkg/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type Product struct {
@@ -16,7 +17,9 @@ type Product struct {
 }
 
 func Initialize(cfg config.Config) *gorm.DB {
-	db, err := gorm.Open(sqlite.Open(cfg.DBUrl), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(cfg.DBUrl), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		log.Fatal("failed to connect database")
 	}
@@ -28,4 +31,5 @@ func Initialize(cfg config.Config) *gorm.DB {
 
 func migrateDB(db *gorm.DB) {
 	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Site{})
 }

@@ -5,7 +5,7 @@ type User struct {
 
 	Email        string `json:"email" gorm:"unique"`
 	Username     string `json:"username" gorm:"unique;size=32"`
-	PasswordHash string `json:"password_hash,omitempty"`
+	PasswordHash string `json:"-"`
 }
 
 func NewUser(email, username, passwordHash string) User {

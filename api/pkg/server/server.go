@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/FourLineCode/url-shortener/api/internal/config"
 	"github.com/FourLineCode/url-shortener/api/pkg/db"
+	"github.com/FourLineCode/url-shortener/api/pkg/handlers/sitehandler"
 	"github.com/FourLineCode/url-shortener/api/pkg/handlers/userhandler"
 	"github.com/FourLineCode/url-shortener/api/pkg/middleware"
 	"github.com/gofiber/fiber/v2"
@@ -27,4 +28,5 @@ func New(cfg config.Config) *fiber.App {
 
 func registerRoutes(app *fiber.App, db *gorm.DB) {
 	app.Mount("/user", userhandler.NewHandler(db))
+	app.Mount("/site", sitehandler.NewHandler(db))
 }
