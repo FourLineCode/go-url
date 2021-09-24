@@ -13,7 +13,7 @@
 	import { browser } from '$app/env';
 	import { goto } from '$app/navigation';
 	import axios from 'axios';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import UrlCard from '../../components/url-card.svelte';
 	import { config } from '../../internal/config';
@@ -21,6 +21,9 @@
 
 	let authInfo: AuthState;
 	let loading: boolean = true;
+	let items: Item[] = [];
+	let sortby: 'date-new' | 'date-old' | 'a-z' | 'z-a' = 'date-new';
+	let sortedItems: Item[] = [];
 	let errorMessage = '';
 	const unsubscribe = auth.subscribe((data) => (authInfo = data));
 
@@ -62,34 +65,35 @@
 	}
 
 	onMount(async () => {
-		try {
-		} catch (error) {
-			errorMessage = error.response.data.message;
-		}
+		items = await getSites();
 	});
 
-	onDestroy(unsubscribe);
+	async function getSites() {
+		try {
+			const token = window.localStorage.getItem('auth-token');
+			const res = await axios.get(`${config.apiUrl}/site/usersites`, {
+				headers: {
+					'auth-token': token,
+				},
+			});
+			return res.data;
+		} catch (error) {
+			errorMessage = error.response.data.error;
+		}
+	}
 
-	let items: Item[] = [
-		{
-			id: 2,
-			created_at: '2021-09-24T09:56:53.847153385+06:00',
-			key: 'zvnP5Npx6dGXyLudB6rPEg',
-			url: 'http://sjdnjsd.sdkns',
-		},
-		{
-			id: 4,
-			created_at: '2021-09-24T09:58:22.751357728+06:00',
-			key: 'UnSC4oDyA7UR9aJzepWv7K',
-			url: 'http://akmalakmal.com',
-		},
-		{
-			id: 6,
-			created_at: '2021-09-24T10:13:56.671464378+06:00',
-			key: '8d4RzQosgZxT3Rdb9PZSxk',
-			url: 'http://kekw.com',
-		},
-	];
+	$: sortedItems = items.sort((a, b) => {
+		const index = 'http://'.length;
+		if (sortby === 'date-new') {
+			return Number(new Date(b.created_at)) - Number(new Date(a.created_at));
+		} else if (sortby === 'date-old') {
+			return Number(new Date(a.created_at)) - Number(new Date(b.created_at));
+		} else if (sortby === 'a-z') {
+			return a.url.charCodeAt(index) - b.url.charCodeAt(index);
+		} else if (sortby === 'z-a') {
+			return b.url.charCodeAt(index) - a.url.charCodeAt(index);
+		}
+	});
 </script>
 
 <svelte:head>
@@ -121,9 +125,11 @@
 				<div>
 					<select
 						name="sort"
-						class="w-32 px-2 py-1 border border-gray-500 focus:outline-none focus:border-green-500"
+						bind:value={sortby}
+						class="w-48 px-2 py-1 border border-gray-500 focus:outline-none focus:border-green-500"
 					>
-						<option value="date">Sort by date</option>
+						<option value="date-new">{'Sort by date (newest)'}</option>
+						<option value="date-old">{'Sort by date (oldest)'}</option>
 						<option value="a-z">Sort by a-z</option>
 						<option value="z-a">Sort by z-a</option>
 					</select>
@@ -158,7 +164,7 @@
 						{errorMessage}
 					</div>
 				{:else}
-					{#each items as item}
+					{#each sortedItems as item}
 						<UrlCard site={item} />
 					{/each}
 				{/if}

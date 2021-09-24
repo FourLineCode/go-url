@@ -40,7 +40,8 @@
 					<a
 						href={siteUrl}
 						target="_blank"
-						class="truncate hover:underline hover:text-green-500">{siteUrl}</a
+						class="truncate hover:underline hover:text-green-500"
+						>{siteUrl.replace('http://', '')}</a
 					>
 				</div>
 				<div class="flex items-center space-x-2 text-xs">

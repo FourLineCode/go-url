@@ -25,7 +25,7 @@ func (h *SiteHandler) createSite(c *fiber.Ctx) error {
 	if err := c.BodyParser(input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(utils.NewError("Invalid site url"))
 	}
-	input.Url = strings.ToLower(input.Url)
+	input.Url = strings.Replace(strings.ToLower(input.Url), "https://", "http://", 1)
 
 	validate := validator.New()
 	if err := validate.Struct(input); err != nil {
