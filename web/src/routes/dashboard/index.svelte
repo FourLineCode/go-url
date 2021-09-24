@@ -57,6 +57,7 @@
 						username: data.user.username,
 					},
 				});
+				items = await getSites();
 			}
 		} catch (error) {
 			goto('/login');
@@ -67,10 +68,6 @@
 	$: if (browser && !authInfo.authorized && !loading) {
 		goto('/login');
 	}
-
-	onMount(async () => {
-		items = await getSites();
-	});
 
 	function setItems(callback: (curr: Item[]) => Item[]) {
 		items = callback(items);
