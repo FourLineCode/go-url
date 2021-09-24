@@ -7,8 +7,9 @@
 
 	export let site: Item;
 	export let setItems: (arg: (prev: Item[]) => Item[]) => void;
-	let showUpdate: boolean = false;
-	let showDelete: boolean = false;
+	let showUpdate = false;
+	let showDelete = false;
+	let updateUrlString = '';
 	let updateErrorMessage = '';
 	let deleteErrorMessage = '';
 
@@ -18,6 +19,41 @@
 
 	$: showUpdate = $state === 'update';
 	$: showDelete = $state === 'delete';
+
+	async function updateUrl() {
+		if (!updateUrlString.trim()) return;
+		try {
+			const token = window.localStorage.getItem('auth-token');
+			const urlString =
+				updateUrlString.startsWith('http://') || updateUrlString.startsWith('https://')
+					? updateUrlString
+					: 'http://' + updateUrlString;
+			const res = await axios.put(
+				`${config.apiUrl}/site/${site.key}`,
+				{ url: urlString },
+				{
+					headers: {
+						'auth-token': token,
+					},
+				}
+			);
+			const data = res.data;
+			if (data.success) {
+				showUpdate = false;
+				const site = data.site;
+				const updatedSite: Item = {
+					id: site.id,
+					created_at: site.created_at,
+					key: site.key,
+					url: site.url,
+				};
+				setItems((prev) => [...prev.filter((item) => !(item.id === site.id)), updatedSite]);
+				updateUrlString = '';
+			}
+		} catch (error) {
+			updateErrorMessage = error.response.data.error;
+		}
+	}
 
 	async function deleteUrl() {
 		try {
@@ -159,17 +195,23 @@
 		</div>
 	</div>
 	{#if showUpdate}
-		<div class="flex items-center justify-end py-2 space-x-2">
+		<form
+			on:submit|preventDefault={updateUrl}
+			class="flex items-center justify-end py-2 space-x-2"
+		>
+			<span class="text-xs text-red-500">{updateErrorMessage}</span>
 			<input
 				type="text"
 				placeholder="Example - http://example.com"
+				bind:value={updateUrlString}
+				on:input={() => (updateErrorMessage = '')}
 				class="px-2 py-1 border border-gray-500 w-80 focus:outline-none focus:border-indigo-500"
 			/>
 			<button
 				class="bg-indigo-500 flex items-center space-x-1 hover:bg-indigo-600 font-semibold text-white px-2 py-1.5"
 				>Done</button
 			>
-		</div>
+		</form>
 	{:else if showDelete}
 		<div class="flex items-center justify-end py-2 space-x-4">
 			<span class="font-semibold text-red-500"
