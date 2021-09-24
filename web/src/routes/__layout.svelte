@@ -19,7 +19,7 @@
 </script>
 
 <body>
-	<div class="w-full lg:w-[1000px] flex justify-between items-center h-16 mx-auto">
+	<div class="w-full mx-4 lg:w-[1000px] flex justify-between items-center h-16 lg:mx-auto">
 		<div class="flex text-4xl italic font-bold">
 			<span>GO-</span>
 			<span class="underline">URL</span>

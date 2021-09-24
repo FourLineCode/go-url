@@ -154,7 +154,7 @@
 		</div>
 	</div>
 {:else}
-	<div class="flex justify-center w-screen h-screen">
+	<div class="flex justify-center w-full h-full">
 		<div class="w-full lg:w-[800px] mt-4 space-y-4">
 			<div class="flex justify-between items-center">
 				<form class="space-x-1">
