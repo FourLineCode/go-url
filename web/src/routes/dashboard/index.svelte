@@ -24,7 +24,11 @@
 	let items: Item[] = [];
 	let sortby: 'date-new' | 'date-old' | 'a-z' | 'z-a' = 'date-new';
 	let sortedItems: Item[] = [];
+	let searchTerm: string = '';
+	let filteredItems: Item[] = [];
 	let errorMessage = '';
+	let createUrlString: string;
+	let createErrorMessage = '';
 	const unsubscribe = auth.subscribe((data) => (authInfo = data));
 
 	onMount(async () => {
@@ -94,6 +98,54 @@
 			return b.url.charCodeAt(index) - a.url.charCodeAt(index);
 		}
 	});
+
+	$: filteredItems = sortedItems.filter((item) =>
+		item.url.toLowerCase().includes(searchTerm.toLowerCase().trim())
+	);
+
+	function filterItems() {
+		filteredItems = sortedItems.filter((item) =>
+			item.url.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+	}
+
+	async function createUrl() {
+		try {
+			const token = window.localStorage.getItem('auth-token');
+			const urlString =
+				createUrlString.startsWith('http://') || createUrlString.startsWith('https://')
+					? createUrlString
+					: 'http://' + createUrlString;
+			const res = await axios.post(
+				`${config.apiUrl}/site/create`,
+				{
+					url: urlString,
+				},
+				{
+					headers: {
+						'auth-token': token,
+					},
+				}
+			);
+			const data: { success: boolean; site: Item } = res.data;
+			if (data.success) {
+				const site = data.site;
+				const newSite = {
+					id: site.id,
+					created_at: site.created_at,
+					key: site.key,
+					url: site.url,
+				};
+				items = [...items, newSite];
+			} else {
+				createErrorMessage = 'Something went wrong';
+			}
+			composer.set(false);
+			// items.push(res.data.site);
+		} catch (error) {
+			createErrorMessage = error.response.data.error;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -110,10 +162,11 @@
 	<div class="flex justify-center w-full h-full">
 		<div class="w-full lg:w-[800px] mt-4 space-y-4">
 			<div class="flex items-center justify-between">
-				<form on:submit|preventDefault={() => console.log('search')} class="space-x-1">
+				<form on:submit|preventDefault={filterItems} class="space-x-1">
 					<input
 						placeholder="Search"
 						type="search"
+						bind:value={searchTerm}
 						class="w-64 px-2 py-1 border border-gray-500 focus:outline-none focus:border-green-500"
 					/>
 					<button
@@ -143,11 +196,14 @@
 				</div>
 			</div>
 			{#if $composer}
-				<div class="flex justify-end">
-					<form on:submit|preventDefault={() => console.log('create')} class="space-x-1">
+				<div class="flex items-center justify-end space-x-2">
+					<span class="text-xs text-red-500">{createErrorMessage}</span>
+					<form on:submit|preventDefault={createUrl} class="space-x-1">
 						<input
 							type="text"
 							placeholder="Example - http://example.com"
+							bind:value={createUrlString}
+							on:input={() => (createErrorMessage = '')}
 							class="px-2 py-1 border border-gray-500 w-80 focus:outline-none focus:border-green-500"
 						/>
 						<button
@@ -164,7 +220,7 @@
 						{errorMessage}
 					</div>
 				{:else}
-					{#each sortedItems as item}
+					{#each filteredItems as item}
 						<UrlCard site={item} />
 					{/each}
 				{/if}
