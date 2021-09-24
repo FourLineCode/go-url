@@ -110,6 +110,7 @@
 	}
 
 	async function createUrl() {
+		if (!createUrlString.trim()) return;
 		try {
 			const token = window.localStorage.getItem('auth-token');
 			const urlString =
@@ -137,6 +138,7 @@
 					url: site.url,
 				};
 				items = [...items, newSite];
+				createUrlString = '';
 			} else {
 				createErrorMessage = 'Something went wrong';
 			}
