@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import axios from 'axios';
 	import { onMount } from 'svelte';
+	import { config } from '../../internal/config';
 
 	let email: string = '';
 	let username: string = '';
@@ -12,7 +13,7 @@
 	async function register() {
 		status = '';
 		try {
-			const res = await axios.post('http://localhost:5000/user/register', {
+			const res = await axios.post(`${config.apiUrl}/user/register`, {
 				email,
 				username,
 				password,

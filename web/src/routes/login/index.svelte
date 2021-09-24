@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import axios from 'axios';
 	import { onDestroy, onMount } from 'svelte';
+	import { config } from '../../internal/config';
 	import { auth } from '../../stores/auth';
 
 	const unsubscribe = auth.subscribe(() => {});
@@ -14,7 +15,7 @@
 	async function login() {
 		status = '';
 		try {
-			const res = await axios.post('http://localhost:5000/user/login', {
+			const res = await axios.post(`${config.apiUrl}/user/login`, {
 				email,
 				password,
 			});

@@ -13,6 +13,7 @@
 	import axios from 'axios';
 	import { onDestroy, onMount } from 'svelte';
 	import UrlCard from '../../components/url-card.svelte';
+	import { config } from '../../internal/config';
 	import { auth, AuthState } from '../../stores/auth';
 
 	let authInfo: AuthState;
@@ -29,7 +30,7 @@
 		const token = window.localStorage.getItem('auth-token');
 
 		try {
-			const res = await axios.get('http://localhost:5000/user/authorize', {
+			const res = await axios.get(`${config.apiUrl}/user/authorize`, {
 				headers: {
 					'auth-token': token,
 				},
