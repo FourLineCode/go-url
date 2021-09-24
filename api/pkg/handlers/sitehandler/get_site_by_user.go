@@ -15,7 +15,7 @@ func (h *SiteHandler) getSiteByUser(c *fiber.Ctx) error {
 
 	var sites []models.Site
 
-	h.DB.Where("user_id = ?", auth.User.ID).Find(&sites)
+	h.DB.Where("user_id = ?", auth.User.ID).First(&sites)
 
 	return c.Status(fiber.StatusOK).JSON(sites)
 }

@@ -22,4 +22,5 @@ func (h *SiteHandler) registerRoutes() {
 	h.App.Get("/all", h.getSites)
 	h.App.Post("/create", h.createSite)
 	h.App.Get("/usersites", h.getSiteByUser)
+	h.App.Get("/url/:key", h.getSiteUrl)
 }
