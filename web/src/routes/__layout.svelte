@@ -18,7 +18,7 @@
 	onDestroy(unsubscribe);
 </script>
 
-<body>
+<body class="relative">
 	<div class="w-full mx-4 lg:w-[1000px] flex justify-between items-center h-16 lg:mx-auto">
 		<div class="flex text-4xl italic font-bold">
 			<span>GO-</span>
@@ -62,6 +62,6 @@
 
 <style global type="postcss">
 	body {
-		@apply antialiased bg-gray-200 text-gray-900 font-sans;
+		@apply antialiased bg-gray-200 text-gray-900 font-sans m-0 p-0;
 	}
 </style>

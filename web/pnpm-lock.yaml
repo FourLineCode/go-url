@@ -20,7 +20,7 @@ dependencies:
   date-fns: 2.24.0
 
 devDependencies:
-  '@sveltejs/kit': 1.0.0-next.171_svelte@3.42.6
+  '@sveltejs/kit': 1.0.0-next.172_svelte@3.42.6
   autoprefixer: 10.3.4_postcss@8.3.6
   cssnano: 5.0.8_postcss@8.3.6
   postcss: 8.3.6
@@ -84,12 +84,12 @@ packages:
       picomatch: 2.3.0
     dev: true
 
-  /@sveltejs/kit/1.0.0-next.171_svelte@3.42.6:
-    resolution: {integrity: sha512-lDdEc6eVc8ILuQavHw/HKK7rQs3LMPp1gxieoChvSJGix/GGEaxaOQlUH0JyoLridqzQo39z6XM0giwWLQtGfA==}
+  /@sveltejs/kit/1.0.0-next.172_svelte@3.42.6:
+    resolution: {integrity: sha512-DeK9RLy+5SnGDWHq1gjWBMpj4ggctJrxyZfrw266AKZP1yvOqeutX/9XoLKv8lRoAoM12Bm8GxLoTECi7IOYWg==}
     engines: {node: ^12.20 || >=14.13}
     hasBin: true
     peerDependencies:
-      svelte: ^3.39.0
+      svelte: ^3.43.0
     dependencies:
       '@sveltejs/vite-plugin-svelte': 1.0.0-next.24_svelte@3.42.6+vite@2.5.8
       cheap-watch: 1.0.4

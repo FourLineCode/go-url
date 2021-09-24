@@ -1,20 +1,30 @@
 <script lang="ts">
 	import { format } from 'date-fns';
 	import type { Item } from 'src/routes/dashboard/index.svelte';
+	import { writable } from 'svelte/store';
 	import { config } from '../internal/config';
 
 	export let site: Item;
+	let showUpdate: boolean = false;
+	let showDelete: boolean = false;
+
+	const siteUrl = `${config.hostUrl}/s/${site.key}`;
+
+	const state = writable<'update' | 'delete' | 'none'>('none');
+
+	$: showUpdate = $state === 'update';
+	$: showDelete = $state === 'delete';
 </script>
 
-<div class="bg-gray-300 w-full py-2 px-4">
-	<div class="flex justify-between items-center">
+<div class="w-full px-4 py-2 bg-gray-300">
+	<div class="flex items-center justify-between">
 		<div class="space-y-2">
 			<div>
 				<div class="flex items-center space-x-1">
 					<span class="font-semibold"
 						><svg
 							xmlns="http://www.w3.org/2000/svg"
-							class="h-4 w-4"
+							class="w-4 h-4"
 							fill="none"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
@@ -28,17 +38,16 @@
 						</svg></span
 					>
 					<a
-						href={`${config.hostUrl}/s/${site.key}`}
+						href={siteUrl}
 						target="_blank"
-						class="hover:underline truncate hover:text-green-500"
-						>{`${config.hostUrl}/s/${site.key}`}</a
+						class="truncate hover:underline hover:text-green-500">{siteUrl}</a
 					>
 				</div>
-				<div class="text-xs flex items-center space-x-2">
+				<div class="flex items-center space-x-2 text-xs">
 					<span class="font-semibold"
 						><svg
 							xmlns="http://www.w3.org/2000/svg"
-							class="h-3 w-3"
+							class="w-3 h-3"
 							viewBox="0 0 20 20"
 							fill="currentColor"
 						>
@@ -52,7 +61,7 @@
 					<a
 						href={site.url}
 						target="_blank"
-						class="hover:underline truncate hover:text-green-500">{site.url}</a
+						class="truncate hover:underline hover:text-green-500">{site.url}</a
 					>
 				</div>
 			</div>
@@ -61,13 +70,14 @@
 				<span>{format(new Date(site.created_at), 'dd MMM, yyyy')}</span>
 			</div>
 		</div>
-		<div class="space-x-2 flex items-center">
+		<div class="flex items-center space-x-2">
 			<button
 				class="bg-green-500 flex items-center space-x-1 hover:bg-green-600 font-semibold text-white px-2 py-1.5"
+				on:click={() => window.open(siteUrl, '_blank').focus()}
 				><span
 					><svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5"
+						class="w-5 h-5"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -83,11 +93,12 @@
 			>
 			<button
 				class="bg-indigo-500 flex items-center space-x-1 hover:bg-indigo-600 font-semibold text-white px-2 py-1.5"
+				on:click={() => state.update((prev) => (prev === 'update' ? 'none' : 'update'))}
 			>
 				<span
 					><svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5"
+						class="w-5 h-5"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -104,10 +115,11 @@
 			>
 			<button
 				class="bg-red-500 flex items-center space-x-1 hover:bg-red-600 font-semibold text-white px-2 py-1.5"
+				on:click={() => state.update((prev) => (prev === 'delete' ? 'none' : 'delete'))}
 				><span
 					><svg
 						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5"
+						class="w-5 h-5"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke="currentColor"
@@ -123,4 +135,27 @@
 			>
 		</div>
 	</div>
+	{#if showUpdate}
+		<div class="flex items-center justify-end py-2 space-x-2">
+			<input
+				type="text"
+				placeholder="Example - http://example.com"
+				class="px-2 py-1 border border-gray-500 w-80 focus:outline-none focus:border-indigo-500"
+			/>
+			<button
+				class="bg-indigo-500 flex items-center space-x-1 hover:bg-indigo-600 font-semibold text-white px-2 py-1.5"
+				>Done</button
+			>
+		</div>
+	{:else if showDelete}
+		<div class="flex items-center justify-end py-2 space-x-4">
+			<span class="font-semibold text-red-500"
+				>Are you sure? This action is not reversible</span
+			>
+			<button
+				class="bg-red-500 flex items-center space-x-1 hover:bg-red-600 font-semibold text-white px-2 py-1.5"
+				>Confirm Delete</button
+			>
+		</div>
+	{/if}
 </div>
