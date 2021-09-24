@@ -156,16 +156,18 @@
 	<div class="flex justify-center w-screen h-screen">
 		<div class="w-full lg:w-[800px] mt-4 space-y-4">
 			<div class="flex justify-between items-center">
-				<div class="space-x-2">
+				<form class="space-x-1">
 					<input
 						placeholder="Search"
 						type="search"
 						class="py-1 px-2 w-64 focus:outline-none border border-gray-500 focus:border-green-500"
 					/>
-					<button class="bg-gray-700 hover:bg-gray-800 font-semibold text-white py-1 px-2"
+					<button
+						type="submit"
+						class="bg-gray-700 hover:bg-gray-800 font-semibold text-white py-1 px-2"
 						>Search</button
 					>
-				</div>
+				</form>
 				<div>
 					<select
 						name="sort"
