@@ -3,6 +3,7 @@ package db
 import (
 	"log"
 
+	"github.com/FourLineCode/url-shortener/api/internal/config"
 	"github.com/FourLineCode/url-shortener/api/pkg/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -14,8 +15,8 @@ type Product struct {
 	Price uint
 }
 
-func Initialize() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("test.sqlite"), &gorm.Config{})
+func Initialize(cfg config.Config) *gorm.DB {
+	db, err := gorm.Open(sqlite.Open(cfg.DBUrl), &gorm.Config{})
 	if err != nil {
 		log.Fatal("failed to connect database")
 	}

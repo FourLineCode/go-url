@@ -11,8 +11,8 @@ import (
 func main() {
 	godotenv.Load(".env")
 
-	s := server.New()
 	cfg := config.GetConfig()
+	s := server.New(cfg)
 
 	if err := s.Listen(cfg.Port); err != nil {
 		log.Fatalln("Error starting server", err.Error())

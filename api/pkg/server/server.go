@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/FourLineCode/url-shortener/api/internal/config"
 	"github.com/FourLineCode/url-shortener/api/pkg/db"
 	"github.com/FourLineCode/url-shortener/api/pkg/handlers/userhandler"
 	"github.com/FourLineCode/url-shortener/api/pkg/middleware"
@@ -9,13 +10,13 @@ import (
 	"gorm.io/gorm"
 )
 
-func New() *fiber.App {
-	dbConn := db.Initialize()
+func New(cfg config.Config) *fiber.App {
+	dbConn := db.Initialize(cfg)
 
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:3000",
+		AllowOrigins: cfg.OriginAllowed,
 	}))
 	app.Use(middleware.AuthMiddleware)
 
