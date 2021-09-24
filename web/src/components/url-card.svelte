@@ -1,12 +1,16 @@
 <script lang="ts">
+	import axios from 'axios';
 	import { format } from 'date-fns';
 	import type { Item } from 'src/routes/dashboard/index.svelte';
 	import { writable } from 'svelte/store';
 	import { config } from '../internal/config';
 
 	export let site: Item;
+	export let setItems: (arg: (prev: Item[]) => Item[]) => void;
 	let showUpdate: boolean = false;
 	let showDelete: boolean = false;
+	let updateErrorMessage = '';
+	let deleteErrorMessage = '';
 
 	const siteUrl = `${config.hostUrl}/s/${site.key}`;
 
@@ -14,6 +18,24 @@
 
 	$: showUpdate = $state === 'update';
 	$: showDelete = $state === 'delete';
+
+	async function deleteUrl() {
+		try {
+			const token = window.localStorage.getItem('auth-token');
+			const res = await axios.delete(`${config.apiUrl}/site/${site.key}`, {
+				headers: {
+					'auth-token': token,
+				},
+			});
+			const data = res.data;
+			if (data.success) {
+				showDelete = false;
+				setItems((prev) => prev.filter((item) => !(item.id === site.id)));
+			}
+		} catch (error) {
+			deleteErrorMessage = error.response.data.error;
+		}
+	}
 </script>
 
 <div class="w-full px-4 py-2 bg-gray-300">
@@ -151,11 +173,13 @@
 	{:else if showDelete}
 		<div class="flex items-center justify-end py-2 space-x-4">
 			<span class="font-semibold text-red-500"
-				>Are you sure? This action is not reversible</span
+				>{deleteErrorMessage
+					? deleteErrorMessage
+					: 'Are you sure? This action is not reversible'}</span
 			>
 			<button
 				class="bg-red-500 flex items-center space-x-1 hover:bg-red-600 font-semibold text-white px-2 py-1.5"
-				>Confirm Delete</button
+				on:click={deleteUrl}>Confirm Delete</button
 			>
 		</div>
 	{/if}

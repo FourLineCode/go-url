@@ -1,25 +1,21 @@
 <script context="module" lang="ts">
 	import type { LoadInput } from '@sveltejs/kit';
+	import axios from 'axios';
+	import { config } from '../../internal/config';
 
 	export async function load({ page }: LoadInput) {
-		return {
-			props: {
-				id: page.params.id,
-			},
-		};
+		try {
+			const res = await axios.get(`${config.apiUrl}/site/url/${page.params.id}`);
+			const data = res.data;
+			return {
+				redirect: data.url,
+				status: 302,
+			};
+		} catch (error) {
+			return {
+				redirect: '/404',
+				status: 302,
+			};
+		}
 	}
 </script>
-
-<script lang="ts">
-	export let id: string;
-</script>
-
-<svelte:head>
-	<title>{id} | GO-URL Shortener</title>
-</svelte:head>
-
-<div class="flex justify-center w-screen h-screen">
-	<div class="mt-32 space-y-2 text-center">
-		<div class="text-4xl italic font-bold">Site - {id}</div>
-	</div>
-</div>

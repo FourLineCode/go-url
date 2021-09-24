@@ -72,6 +72,10 @@
 		items = await getSites();
 	});
 
+	function setItems(callback: (curr: Item[]) => Item[]) {
+		items = callback(items);
+	}
+
 	async function getSites() {
 		try {
 			const token = window.localStorage.getItem('auth-token');
@@ -222,8 +226,8 @@
 						{errorMessage}
 					</div>
 				{:else}
-					{#each filteredItems as item}
-						<UrlCard site={item} />
+					{#each filteredItems as item (item.id)}
+						<UrlCard site={item} {setItems} />
 					{/each}
 				{/if}
 			</div>
